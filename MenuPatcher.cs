@@ -37,7 +37,7 @@ namespace MoreWorldOptions
 
             ILLabel endIf = null;
             ILLabel startIf = null;
-            if (FindNextInstruction(il,
+            if (Util.FindNextInstruction(il,
                 x => x.MatchLdcI4(1),
                 x => x.MatchStsfld("Terraria.ModLoader.ModLoader", "skipLoad"),
                 x => x.MatchBr(out endIf)
@@ -46,7 +46,7 @@ namespace MoreWorldOptions
 
             int textOnlyButtons = 0;
 
-            int patchPos = FindNextInstruction(il,
+            int patchPos = Util.FindNextInstruction(il,
                 x => x.MatchDup(),              // Removed
                 x => x.MatchBrfalse(out _),     // Redirected
                 x => x.MatchLdcI4(1),
@@ -65,7 +65,7 @@ namespace MoreWorldOptions
                 numButtons = 0,
                 backButtonDown = 0;
 
-            if (FindNextInstruction(il,
+            if (Util.FindNextInstruction(il,
                 x => x.MatchLdarg(0),
                 x => x.MatchLdarg(0),
                 x => x.MatchLdfld<Main>("selectedMenu"),
@@ -107,41 +107,6 @@ namespace MoreWorldOptions
             c.Emit(OpCodes.Brtrue, endIf);
             c.Emit(OpCodes.Br_S, startIf);
         }
-
-        public static int FindNextInstruction(ILContext il, params Func<Instruction, bool>[] predicates)
-        {
-            int pIndex = 0;
-            for (int i = 0; i < il.Instrs.Count; i++)
-            {
-                if (pIndex == predicates.Length)
-                {
-                    return i - predicates.Length;
-                }
-
-                else if (predicates[pIndex](il.Instrs[i])) pIndex++;
-                else pIndex = 0;
-            }
-            return -1;
-        }
-        public static IEnumerable<int> FindNextInstructions(ILContext il, params Func<Instruction, bool>[] predicates)
-        {
-            int pIndex = 0;
-            for (int i = 0; i < il.Instrs.Count; i++)
-            {
-                if (pIndex == predicates.Length)
-                {
-                    Instruction current = il.Instrs[i];
-                    yield return i - predicates.Length;
-                    int newIndex = il.Instrs.IndexOf(current);
-                    i = newIndex == -1 ? i : newIndex;
-                    pIndex = 0;
-                }
-
-                else if (predicates[pIndex](il.Instrs[i])) pIndex++;
-                else pIndex = 0;
-            }
-        }
-
 
     }
 }

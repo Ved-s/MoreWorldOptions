@@ -37,6 +37,7 @@ namespace MoreWorldOptions
             base.Unload();
             MenuPatcher.RemovePatch();
             WorldGenPatches.RemovePatches();
+            GeneratorPatches.RemovePatches();
 
             On.Terraria.IO.WorldFileData.SetWorldSize -= WorldFileData_SetWorldSize;
         }
