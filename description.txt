@@ -12,4 +12,4 @@ Changelog:
 	[v0.2] - Removed min 4200 block limit for Jungle and Temple generation
 	[v0.3] - Modified minecart track generator for big worlds
 		fixed min zoom for fullscreen  map
-		screenshots now captured in resolution up to 27000x2700
+		screenshots now captured in resolution up to 27000x27000
