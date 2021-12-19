@@ -10,3 +10,6 @@ Minimum world size is 4200x900
 Changelog:
 	[v0.1] - Added minimal support for world generation bigger than 8400x2400
 	[v0.2] - Removed min 4200 block limit for Jungle and Temple generation
+	[v0.3] - Modified minecart track generator for big worlds
+		fixed min zoom for fullscreen  map
+		screenshots now captured in resolution up to 27000x2700
