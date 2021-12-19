@@ -2,3 +2,4 @@ displayName = More World Options
 author = Ved_s
 version = 0.2
 homepage = https://github.com/Ved-s/MoreWorldOptions
+side = Client

@@ -4,6 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Terraria;
+using Terraria.GameContent.UI.Elements;
+using Terraria.UI;
+using System.Linq;
+using Mono.Cecil;
+using Terraria.IO;
 
 namespace MoreWorldOptions
 {
@@ -12,13 +17,39 @@ namespace MoreWorldOptions
         public static void ApplyPatch()
         {
             IL.Terraria.Main.DrawMenu += DrawMenu;
+            IL.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += UIWorldListItem_ctor;
         }
 
         public static void RemovePatch()
         {
             IL.Terraria.Main.DrawMenu -= DrawMenu;
+            IL.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor -= UIWorldListItem_ctor;
         }
 
+        private static void UIWorldListItem_ctor(ILContext il)
+        {
+            FieldReference deleteButtonLabel = null;
+
+            int pos = Util.FindNextInstruction(il,
+                x => x.MatchLdarg(0),
+                x => x.MatchLdfld(out deleteButtonLabel),
+                x => x.MatchLdflda(out _),
+                x => x.MatchLdcR4(-30),
+                x => x.MatchLdcR4(0)
+                );
+
+            // for later
+            //il.Instrs[pos + 3].Operand = -54f;
+
+            pos = Util.FindNextInstruction(il, x => x.MatchRet());
+
+            ILCursor c = new ILCursor(il).Goto(pos);
+            c.Emit(OpCodes.Ldarg_0);
+            c.Emit(OpCodes.Ldarg_0);
+            c.Emit(OpCodes.Ldfld, deleteButtonLabel);
+            c.Emit(OpCodes.Ldarg_1);
+            c.Emit(OpCodes.Call, Util.MethodOf<UIElement, UIText, WorldFileData>(ModifyWorldItem));
+        }
         private static void DrawMenu(ILContext il)
         {
             /*
@@ -106,6 +137,27 @@ namespace MoreWorldOptions
             c.Emit<MoreWorldOptions>(OpCodes.Call, "DrawMenuHook");
             c.Emit(OpCodes.Brtrue, endIf);
             c.Emit(OpCodes.Br_S, startIf);
+        }
+
+
+        private static void ModifyWorldItem(UIElement @this, UIText deleteButtonLabel, WorldFileData data) 
+        {
+            // for later
+            //UIImageButton btn = new UIImageButton(MoreWorldOptions.SmallPlus);
+            //btn.VAlign = 1f;
+            //btn.HAlign = 1f;
+            //btn.Left.Set(-24, 0);
+            ////btn.OnClick += this.DeleteButtonClick;
+            //btn.OnMouseOver += (ev, ui) =>
+            //{
+            //    deleteButtonLabel.SetText("More World Options");
+            //};
+            //btn.OnMouseOut += (ev, ui) =>
+            //{
+            //    deleteButtonLabel.SetText("");
+            //};
+            ////btn.
+            //@this.Append(btn);
         }
 
     }

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoreWorldOptions", "MoreWorldOptions.csproj", "{EDD5EE19-E73F-4F91-9DD2-169589E233F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoreWorldOptions", "MoreWorldOptions.csproj", "{B3FD3124-A38C-4804-A2EC-78351AB86B70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoreJourneyWorldOptions", "..\..\Beta\Mod Sources\MoreJourneyWorldOptions\MoreJourneyWorldOptions.csproj", "{4C72C895-4FCD-4028-8F2D-40FCA9542A7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EDD5EE19-E73F-4F91-9DD2-169589E233F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDD5EE19-E73F-4F91-9DD2-169589E233F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDD5EE19-E73F-4F91-9DD2-169589E233F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDD5EE19-E73F-4F91-9DD2-169589E233F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3FD3124-A38C-4804-A2EC-78351AB86B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3FD3124-A38C-4804-A2EC-78351AB86B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3FD3124-A38C-4804-A2EC-78351AB86B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3FD3124-A38C-4804-A2EC-78351AB86B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C72C895-4FCD-4028-8F2D-40FCA9542A7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C72C895-4FCD-4028-8F2D-40FCA9542A7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C72C895-4FCD-4028-8F2D-40FCA9542A7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C72C895-4FCD-4028-8F2D-40FCA9542A7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

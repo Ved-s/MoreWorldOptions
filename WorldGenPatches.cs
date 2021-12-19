@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using System.Reflection;
 using Terraria;
 
 namespace MoreWorldOptions
@@ -14,9 +16,8 @@ namespace MoreWorldOptions
             On.Terraria.WorldGen.AddGenerationPass_string_WorldGenLegacyMethod += WorldGen_AddGenerationPass;
 
             IL.Terraria.WorldGen.makeTemple += WorldGen_makeTemple;
+            IL.Terraria.GameContent.Generation.TrackGenerator.FindPath += TrackGenerator_FindPath;
         }
-
-        
 
         public static void RemovePatches()
         {
@@ -26,6 +27,7 @@ namespace MoreWorldOptions
             On.Terraria.WorldGen.AddGenerationPass_string_WorldGenLegacyMethod -= WorldGen_AddGenerationPass;
 
             IL.Terraria.WorldGen.makeTemple -= WorldGen_makeTemple;
+            IL.Terraria.GameContent.Generation.TrackGenerator.FindPath -= TrackGenerator_FindPath;
         }
 
         private static void WorldGen_clearWorld(On.Terraria.WorldGen.orig_clearWorld orig)
@@ -59,9 +61,41 @@ namespace MoreWorldOptions
             orig(name, method);
             if (name == "Jungle") GeneratorPatches.ApplyJunglePass(method.GetMethodInfo());
         }
-        private static void WorldGen_makeTemple(MonoMod.Cil.ILContext il)
+        private static void WorldGen_makeTemple(ILContext il)
         {
             GeneratorPatches.Patch4200(il);
+        }
+        private static void TrackGenerator_FindPath(ILContext il)
+        {
+            int locGeneratedLength = 0;
+            int argMinimumLength = 0;
+
+            int pos = Util.FindNextInstruction(il, 
+                x => x.MatchLdloc(out locGeneratedLength),
+                x => x.MatchLdarg(out argMinimumLength),
+                x => x.MatchCgt(),
+                x => x.MatchLdarg(4),
+                x => x.MatchOr());
+
+            if (pos == -1) return;
+
+            ILCursor c = new ILCursor(il).Goto(pos + 5);
+            c.Emit(OpCodes.Ldloc, locGeneratedLength);
+            c.Emit(OpCodes.Ldarg, argMinimumLength);
+            c.Emit(OpCodes.Call, Util.MethodOf<int,int,bool>(TrackPatch));
+            c.Emit(OpCodes.Or);
+
+        }
+
+        private static bool TrackPatch(int generatedLength, int minimumLength) 
+        {
+            if (Main.maxTilesX > 8400 || Main.maxTilesY > 2400) 
+            {
+                double div = WorldGen.genRand.NextDouble() * 4 + 1;
+
+                return generatedLength > (int)(minimumLength / div);
+            }
+            return false;
         }
     }
 }
