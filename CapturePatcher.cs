@@ -153,7 +153,9 @@ namespace MoreWorldOptions
                         ".png"
                     });
 
-                Bitmap.Save(path, ImageFormat.Png);
+                using (FileStream fs = File.Create(path))
+                    Bitmap.Save(fs, ImageFormat.Png);
+
                 Settings = null;
                 Bitmap.Dispose();
                 Bitmap = null;
@@ -175,7 +177,6 @@ namespace MoreWorldOptions
         }
         private static void CaptureCamera_Capture(On.Terraria.Graphics.Capture.CaptureCamera.orig_Capture orig, object self, Terraria.Graphics.Capture.CaptureSettings settings)
         {
-            const int imageSize = 27000;
 
             Main.GlobalTimerPaused = true;
             Monitor.Enter(Lock);
@@ -192,26 +193,29 @@ namespace MoreWorldOptions
 
             scale = Math.Min(1f, scale);
 
-            if (w > imageSize || h > imageSize)
+            (int maxw, int maxh) = CalculateMaxScaleSize(w, h);
+
+            if (w > maxw || h > maxh)
             {
-                if (w > h)
-                {
-                    scale = (float)imageSize / w;
-                    w = imageSize;
-                    h = (int)(h * scale);
-                }
-                else 
-                {
-                    scale = (float)imageSize / h;
-                    h = imageSize;
-                    w = (int)(w * scale);
-                }
+                scale = (float)maxw / w;
+                w = maxw;
+                h = maxh;
                 Scaled = true;
             }
             else Scaled = false;
-
-
-            Bitmap = new System.Drawing.Bitmap(w, h, PixelFormat.Format24bppRgb);
+            tryAgain:
+            try
+            {
+                Bitmap = new System.Drawing.Bitmap(w, h, PixelFormat.Format24bppRgb);
+            }
+            catch 
+            {
+                float ratio = (float)w / h;
+                w = (int)(w * 0.95);
+                h = (int)(w / ratio);
+                scale = (float)w / (area.Width * 16);
+                goto tryAgain;
+            }
             Graphics = System.Drawing.Graphics.FromImage(Bitmap);
 
             TilesProcessed = 0;
@@ -232,6 +236,14 @@ namespace MoreWorldOptions
             Monitor.Exit(Lock);
         }
 
+        private static (int w, int h) CalculateMaxScaleSize(int width, int height) 
+        {
+            int MaxSize = 20000 * 20000;
 
+            float ratio = (float)width / height;
+
+            int fh = (int)Math.Sqrt(MaxSize / ratio);
+            return ((int)(fh * ratio), fh);
+        }
     }
 }
