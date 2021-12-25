@@ -1,5 +1,5 @@
 displayName = More World Options
 author = Ved_s
-version = 0.4
+version = 0.5
 homepage = https://github.com/Ved-s/MoreWorldOptions
 side = Client

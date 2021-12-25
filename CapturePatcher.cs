@@ -153,6 +153,8 @@ namespace MoreWorldOptions
                         ".png"
                     });
 
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+
                 using (FileStream fs = File.Create(path))
                     Bitmap.Save(fs, ImageFormat.Png);
 

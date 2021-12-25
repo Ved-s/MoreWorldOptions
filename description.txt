@@ -13,3 +13,4 @@ Changelog:
 	[v0.3] - Modified minecart track generator for big worlds
 		fixed min zoom for fullscreen  map
 	[v0.4] - Screenshots now can be up to 400MB in size
+	[v0.5] - fixed crash when no Captures directory found
